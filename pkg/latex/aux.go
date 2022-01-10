@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-func CollectCitekeys(content []byte) []string {
+func CollectCitekeys(content []byte) map[string]struct{} {
 	pattern := regexp.MustCompile(`\\citation{(.+?)}`)
 	set := make(map[string]struct{}) // Go lacks "set"
 	for _, subm := range pattern.FindAllSubmatch(content, -1) {
@@ -13,7 +13,7 @@ func CollectCitekeys(content []byte) []string {
 			set[string(b)] = struct{}{}
 		}
 	}
-	return keys(set)
+	return set
 }
 
 func CollectLabels(content []byte) map[string]string {
@@ -23,12 +23,4 @@ func CollectLabels(content []byte) map[string]string {
 		labels[string(x[1])] = string(x[2])
 	}
 	return labels
-}
-
-func keys(m map[string]struct{}) []string {
-	v := make([]string, 0, len(m))
-	for k := range m {
-		v = append(v, k)
-	}
-	return v
 }

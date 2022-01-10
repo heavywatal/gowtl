@@ -22,13 +22,11 @@ func BibFilter(bibfile string, auxfile string) []byte {
 	pattern := regexp.MustCompile(`(?ms)@\w+?{(\S+?),.+?}$`)
 	for _, subm := range pattern.FindAllSubmatch(content, -1) {
 		kbib := string(subm[1])
-		for i, kcited := range citekeys {
-			if kbib == kcited {
-				buf.Write(selectField(subm[0]))
-				buf.Write([]byte("\n\n"))
-				citekeys = unorderedDel(citekeys, i)
-				break
-			}
+		_, ok := citekeys[kbib]
+		if ok {
+			delete(citekeys, kbib)
+			buf.Write(selectField(subm[0]))
+			buf.Write([]byte("\n\n"))
 		}
 	}
 	if len(citekeys) > 0 {
@@ -69,9 +67,4 @@ func appendEq(vs []string) [][]byte {
 		vb = append(vb, []byte(s+" = "))
 	}
 	return vb
-}
-
-func unorderedDel(v []string, i int) []string {
-	v[i] = v[len(v)-1]
-	return v[:len(v)-1]
 }
