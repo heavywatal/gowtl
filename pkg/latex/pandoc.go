@@ -21,7 +21,7 @@ func Pandocable(texfile string) []byte {
 }
 
 func resolveRef(content []byte, labelmap map[string]string) []byte {
-	pattern := regexp.MustCompile(`\\ref{[^}]+}`)
+	pattern := regexp.MustCompile(`\\ref{.+?}`)
 	repl := func(matched []byte) []byte {
 		label := matched[5:(len(matched) - 1)]
 		return []byte(labelmap[string(label)])
@@ -35,7 +35,7 @@ func removeAsterisk(content []byte) []byte {
 }
 
 func labelCaption(content []byte, labelmap map[string]string) []byte {
-	pattern := regexp.MustCompile(`(?s)caption{(.+?)\\label{([^}]+)}`)
+	pattern := regexp.MustCompile(`(?s)caption{(.+?)\\label{(.+?)}`)
 	repl := func(matched []byte) []byte {
 		subm := pattern.FindSubmatch(matched)
 		label := string(subm[2])
