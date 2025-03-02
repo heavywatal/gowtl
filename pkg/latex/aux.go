@@ -6,7 +6,7 @@ import (
 )
 
 func CollectCitekeys(content []byte) map[string]struct{} {
-	pattern := regexp.MustCompile(`\\citation{(.+?)}`)
+	pattern := regexp.MustCompile(`\\(?:citation|abx@aux@cite\{\d\})\{(.+?)\}`)
 	set := make(map[string]struct{}) // Go lacks "set"
 	for _, subm := range pattern.FindAllSubmatch(content, -1) {
 		for _, b := range bytes.Split(subm[1], []byte(",")) {
